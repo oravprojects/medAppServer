@@ -17,7 +17,8 @@ if ($_POST["table"] === "reports") {
     $sql = "SELECT * FROM caregiver.report WHERE `date` >= $queryDate and `date` < $tomorrowDate";
     // echo $sql;
 
-    $stmt = $conn->prepare("SELECT * FROM report WHERE `date` >= ? and `date` < ?");
+    // $stmt = $conn->prepare("SELECT * FROM report WHERE `date` >= ? and `date` < ?");
+    $stmt = $conn->prepare("SELECT report.idreport, report.type, report.patient, report.date, report.notes, caregiver.fname, caregiver.lname  FROM report join caregiver on caregiver = idcaregiver WHERE `date` >= ? and `date` < ?");
     $stmt->bind_param("ss", $queryDate, $tomorrowDate);
     if ($stmt->execute()) {
         // echo "reports fetched successfully";
@@ -31,7 +32,8 @@ if ($_POST["table"] === "reports") {
 };
 
 if ($_POST["table"] === "reports_add") {
-    $queryDate = $_POST["curr_date"];
+    $timeOffset = $_POST["curr_date"];
+    $client_time = gmdate("Y-m-d H:i:s", strtotime("+{$timeOffset} hours"));
     $user_id = $conn -> real_escape_string($_POST["user_id"]);
     $notes = $conn -> real_escape_string($_POST["notes"]);
     $type = $conn -> real_escape_string($_POST["type"]);
@@ -41,7 +43,7 @@ if ($_POST["table"] === "reports_add") {
     
     $sql = $conn->prepare("INSERT INTO `report` (`type`, `caregiver`, `date`, `notes`)
     VALUES (?,?,?,?)");
-    $sql->bind_param("iiss", $type, $user_id, $queryDate, $notes);
+    $sql->bind_param("iiss", $type, $user_id, $client_time, $notes);
     if ($sql->execute()) {
         echo "Report added successfully";
     } else {
