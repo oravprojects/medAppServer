@@ -30,4 +30,23 @@ if ($_POST["table"] === "reports") {
     };
 };
 
+if ($_POST["table"] === "reports_add") {
+    $queryDate = $_POST["curr_date"];
+    $user_id = $conn -> real_escape_string($_POST["user_id"]);
+    $notes = $conn -> real_escape_string($_POST["notes"]);
+    $type = $conn -> real_escape_string($_POST["type"]);
+    if($type === "daily_report"){
+        $type = 1;
+    }
+    
+    $sql = $conn->prepare("INSERT INTO `report` (`type`, `caregiver`, `date`, `notes`)
+    VALUES (?,?,?,?)");
+    $sql->bind_param("iiss", $type, $user_id, $queryDate, $notes);
+    if ($sql->execute()) {
+        echo "Report added successfully";
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    };
+};
+
 CloseCon($conn);

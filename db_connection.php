@@ -26,6 +26,8 @@ function OpenCon(){
 
     // close connection to database
 function CloseCon($conn){
+include 'dbVar.php';
+
  $conn -> close();
 }
 // mysqli_close($conn);
