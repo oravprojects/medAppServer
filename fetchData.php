@@ -51,4 +51,16 @@ if ($_POST["table"] === "reports_add") {
     };
 };
 
+if ($_POST["table"] === "reports_del") {
+    $rep_id = $conn -> real_escape_string($_POST["id"]);
+    echo $rep_id;
+    $sql = $conn->prepare("DELETE FROM `report` WHERE `idreport` = ?");
+    $sql->bind_param("i", $rep_id);
+    if ($sql->execute()) {
+        echo "Report deleted successfully";
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    };
+};
+
 CloseCon($conn);
