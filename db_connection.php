@@ -1,5 +1,5 @@
 <?php
-include 'dbVar.php';
+
 function OpenCon(){
     include 'dbVar.php';
     
