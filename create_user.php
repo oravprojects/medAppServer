@@ -5,12 +5,12 @@ header('Access-Control-Allow-Origin: *');
 
 $conn = OpenCon();
 
-$first_name = $conn -> real_escape_string($_POST["fname"]);
-$last_name = $conn -> real_escape_string($_POST["lname"]);
-$username = $conn -> real_escape_string($_POST["email"]);
+$first_name = $_POST["fname"];
+$last_name = $_POST["lname"];
+$username = $_POST["email"];
 $password = $_POST["password"];
 $password = password_hash($password, PASSWORD_DEFAULT);
-$phone = $conn -> real_escape_string($_POST["phone"]);
+$phone = $_POST["phone"];
 
 echo $first_name;
 echo $last_name;

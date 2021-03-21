@@ -5,6 +5,27 @@ header('Access-Control-Allow-Origin: *');
 
 $conn = OpenCon();
 
+function encrypt($text)
+{
+    $plaintext = $text;
+    $key = "secret";
+    $cipher = "aes-128-ctr";
+    if (in_array($cipher, openssl_get_cipher_methods())) {
+        $ciphertext = openssl_encrypt($plaintext, $cipher, $key, 0, "BBBBBBBBBBBBBBBB");
+        return $ciphertext;
+    }
+}
+function decrypt($text)
+{
+    $coded_text = $text;
+    $key = "secret";
+    $cipher = "aes-128-ctr";
+    if (in_array($cipher, openssl_get_cipher_methods())) {
+        $original_plaintext = openssl_decrypt($coded_text, $cipher, $key, 0, "BBBBBBBBBBBBBBBB");
+        return $original_plaintext;
+    }
+}
+
 // var_dump($_POST);
 if ($_POST["table"] === "reports") {
     $queryDate = $_POST["curr_date"];
@@ -17,6 +38,10 @@ if ($_POST["table"] === "reports") {
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         $data = $result->fetch_all(MYSQLI_ASSOC);
+        for($i=0; $i<count($data); $i++){ 
+            $newVal = encrypt($data[$i]['idreport']);
+            $data[$i]['idreport'] = $newVal;
+        };
         echo json_encode($data);
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
@@ -44,7 +69,7 @@ if ($_POST["table"] === "reports_add") {
 };
 
 if ($_POST["table"] === "reports_del") {
-    $rep_id = $_POST["id"];
+    $rep_id = decrypt($_POST["id"]);
     $sql = $conn->prepare("DELETE FROM `report` WHERE `idreport` = ?");
     $sql->bind_param("i", $rep_id);
     if ($sql->execute()) {
@@ -55,7 +80,7 @@ if ($_POST["table"] === "reports_del") {
 };
 
 if ($_POST["table"] === "reports_edit") {
-    $rep_id = $_POST["id"];
+    $rep_id = decrypt($_POST["id"]);
     $notes = $_POST["notes"];
     $sql = $conn->prepare("UPDATE `report` SET `notes` = ? WHERE `idreport` = ?");
     $sql->bind_param("si", $notes, $rep_id);
