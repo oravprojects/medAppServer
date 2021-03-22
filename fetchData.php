@@ -1,12 +1,12 @@
 <?php
 // create user in database
-include 'db_connection.php';
+include_once 'db_connection.php';
 header('Access-Control-Allow-Origin: *');
+ini_set('session.cookie_secure', '0');
 
 $conn = OpenCon();
 
-function encrypt($text)
-{
+function encrypt($text){
     $plaintext = $text;
     $key = "secret";
     $cipher = "aes-128-ctr";
@@ -15,8 +15,8 @@ function encrypt($text)
         return $ciphertext;
     }
 }
-function decrypt($text)
-{
+
+function decrypt($text){
     $coded_text = $text;
     $key = "secret";
     $cipher = "aes-128-ctr";
