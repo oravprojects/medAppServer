@@ -2,13 +2,14 @@
 ini_set('session.cookie_secure', '0');
 
 session_start();
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://localhost:5500');
+header('Access-Control-Allow-Credentials: true');
 
+$cookie = session_get_cookie_params();
 
 if(!isset($_SESSION['loggedin'])) {
-    echo "redirect";
+    echo "failure";
 }else{
-    echo "all is good";
+    echo "success";
 }
-print_r($_SESSION);
 ?>
