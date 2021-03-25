@@ -1,8 +1,10 @@
 <?php
-ini_set('session.cookie_secure', '0');
 session_start();
+// echo "session id", session_id();
+// echo "ini get ", ini_get('session.cookie_domain');
 
-header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
+header('Access-Control-Allow-Credentials: true');
 include_once "db_connection.php";
 
 $conn = OpenCon();
@@ -33,6 +35,8 @@ if ($stmt = $conn->prepare('SELECT idcaregiver, password FROM caregiver WHERE us
             $_SESSION['loggedin'] = TRUE;
             $_SESSION['name'] = $_POST['username'];
             $_SESSION['id'] = $id;
+            
+            // var_dump($_SESSION);
             echo 'success';
         } else {
             // Incorrect password
