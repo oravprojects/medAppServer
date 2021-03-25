@@ -16,7 +16,7 @@ if ( !isset($_POST['username'], $_POST['password']) ) {
 }
 
 // Prepare our SQL, preparing the SQL statement will prevent SQL injection.
-if ($stmt = $conn->prepare('SELECT idcaregiver, password FROM caregiver WHERE username = ?')) {
+if ($stmt = $conn->prepare('SELECT idcaregiver, password, fname, lname FROM caregiver WHERE username = ?')) {
 	// Bind parameters (s = string, i = int, b = blob, etc), in our case the username is a string so we use "s"
 	$stmt->bind_param('s', $_POST['username']);
 	$stmt->execute();
@@ -24,7 +24,7 @@ if ($stmt = $conn->prepare('SELECT idcaregiver, password FROM caregiver WHERE us
 	$stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $password);
+        $stmt->bind_result($id, $password, $fname, $lname);
         $stmt->fetch();
         // Account exists, now we verify the password.
         // Note: remember to use password_hash in your registration file to store the hashed passwords.
@@ -33,14 +33,17 @@ if ($stmt = $conn->prepare('SELECT idcaregiver, password FROM caregiver WHERE us
             // Create sessions, so we know the user is logged in, they basically act like cookies but remember the data on the server.
             // session_regenerate_id();
             $_SESSION['loggedin'] = TRUE;
-            $_SESSION['name'] = $_POST['username'];
+            $_SESSION['username'] = $_POST['username'];
             $_SESSION['id'] = $id;
-            
+            $_SESSION['fname'] = $fname;
+            $_SESSION['lname'] = $lname;
+            $res = array("login" => "success", "fname"=> $fname, "lname" => $lname);
             // var_dump($_SESSION);
-            echo 'success';
+            echo json_encode($res);
         } else {
             // Incorrect password
-            echo 'Incorrect username and/or password!';
+            $res = array("login" => "failure");
+            echo json_encode($res);
         }
     } else {
         // Incorrect username
