@@ -1,10 +1,32 @@
 <?php
 // create user in database
 include_once 'db_connection.php';
-header('Access-Control-Allow-Origin: *');
-ini_set('session.cookie_secure', '0');
+
+header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
+header('Access-Control-Allow-Credentials: true');
 
 $conn = OpenCon();
+session_start();
+// echo "this is the array: ";
+// foreach(getallheaders() as $name => $value){
+//     echo "$name: $value\n";
+// }
+
+// $cookie = session_get_cookie_params();
+// echo  "<br>";
+// print_r($_COOKIE);
+// echo  "<br>";
+// echo session_save_path();
+// echo  "<br>";
+// var_dump($_SESSION);
+// echo  "<br>";
+// var_dump($cookie);
+
+
+// echo "session id ", session_id(), "<br>";
+// echo "ini get ", ini_get('session.cookie_domain'), "<br>";
+
+// exit;
 
 function encrypt($text){
     $plaintext = $text;
@@ -51,7 +73,8 @@ if ($_POST["table"] === "reports") {
 if ($_POST["table"] === "reports_add") {
     $timeOffset = $_POST["curr_date"];
     $client_time = gmdate("Y-m-d H:i:s", strtotime("+{$timeOffset} hours"));
-    $user_id = $_POST["user_id"];
+    // $user_id = $_POST["user_id"];
+    $user_id = $_SESSION["id"];
     $notes = $_POST["notes"];
     $type = $_POST["type"];
     if($type === "daily_report"){
