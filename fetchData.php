@@ -114,4 +114,27 @@ if ($_POST["table"] === "reports_edit") {
     };
 };
 
+if ($_POST["table"] === "getReminders") {
+    $user_id = $_SESSION["id"];
+    $timeOffset = $_POST["curr_date"];
+    $client_time = gmdate("Y-m-d H:i:s", strtotime("+{$timeOffset} hours")); 
+    $tomorrowDate = new DateTime($client_time);
+    $tomorrowDate->modify('+1 day');
+    $tomorrowDate = $tomorrowDate->format('Y-m-d H:i:s');
+    $viewed = false;
+    // var_dump($tomorrowDate);
+
+    $stmt = $conn->prepare("SELECT reminder.idreminder, reminder.caregiver, reminder.entered, 
+    reminder.due, reminder.text, caregiver.fname, caregiver.lname  
+    FROM reminder join caregiver on caregiver = idcaregiver WHERE `viewed` = ? and `due` <= ?");
+    $stmt->bind_param("is", $viewed, $tomorrowDate);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        echo json_encode($data);
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    };
+};
+
 CloseCon($conn);
