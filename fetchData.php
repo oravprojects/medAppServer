@@ -122,14 +122,14 @@ if ($_POST["table"] === "getReminders") {
     $tomorrowDate = new DateTime($client_time);
     $tomorrowDate->modify('+1 day');
     $tomorrowDate = $tomorrowDate->format('Y-m-d H:i:s');
-    $viewed = false;
+    $viewed = 0;
     $orderField = "due";
     // var_dump($tomorrowDate);
 
     $stmt = $conn->prepare("SELECT reminder.idreminder, reminder.caregiver, reminder.entered, 
     reminder.due, reminder.text, caregiver.fname, caregiver.lname  
-    FROM reminder join caregiver on caregiver = idcaregiver WHERE `viewed` = ? and `due` <= ? ORDER BY $orderField");
-    $stmt->bind_param("is", $viewed, $tomorrowDate);
+    FROM reminder join caregiver on caregiver = idcaregiver WHERE `caregiver` = ? and `viewed` = ? and `due` <= ? ORDER BY $orderField");
+    $stmt->bind_param("iis", $user_id, $viewed, $tomorrowDate);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         $data = $result->fetch_all(MYSQLI_ASSOC);
@@ -168,5 +168,29 @@ if ($_POST["table"] === "reminderViewed") {
         echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
     };
 };
+
+if ($_POST["table"] === "setApp") {
+    $user_id = $_SESSION["id"];
+    $timeOffset = $_POST["curr_date"];
+    $client_time = gmdate("Y-m-d H:i:s", strtotime("+{$timeOffset} hours")); 
+    // var_dump($tomorrowDate);
+    $start = gmdate("Y-m-d H:i:s", ($_POST["start"]+$timeOffset*60*60));
+    // echo "this is start: ", $start;
+    $end = gmdate("Y-m-d H:i:s", ($_POST["end"]+$timeOffset*60*60));
+    // echo " this is end:",  $end;
+    $notes = $_POST["notes"];
+    $patient = $_POST["pId"];
+    $stmt = $conn->prepare("INSERT INTO `appointment` (`caregiver`, `entered`, `start`, `end`, `notes`, `patient`) 
+    VALUES (?,?,?,?,?,?)");
+    // var_dump($stmt);
+    // return;
+    $stmt->bind_param("issssi", $user_id, $client_time, $start, $end, $notes, $patient);
+    if ($stmt->execute()) {
+        echo "success";
+    } else {
+        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+    };
+};
+
 
 CloseCon($conn);
