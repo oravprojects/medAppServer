@@ -192,5 +192,34 @@ if ($_POST["table"] === "setApp") {
     };
 };
 
+if ($_POST["table"] === "getApp") {
+    // var_dump($_POST);
+    $user_id = $_SESSION["id"];
+    $timeOffset = $_POST["curr_date"];
+    $client_time = gmdate("Y-m-d H:i:s", strtotime("+{$timeOffset} hours"));
+    $client_date = new DateTime($client_time);
+    $client_date->setTime(0, 0, 0); 
+    $client_date = $client_date->format('Y-m-d H:i:s');
+    $tomorrowDate = new DateTime($client_time);
+    $tomorrowDate->modify('+1 day');
+    $tomorrowDate->setTime(0, 0, 0);
+    $tomorrowDate = $tomorrowDate->format('Y-m-d H:i:s');
+    // echo $client_date, " ", $tomorrowDate, " ", $user_id;
+
+    $stmt = $conn->prepare("SELECT appointment.idappointment, appointment.caregiver, appointment.patient, appointment.start, appointment.end, appointment.notes, appointment.entered, patient.fname, patient.lname  
+    FROM appointment join patient on patient = idpatient WHERE `start` >= ? and `start` < ? and caregiver = ?");
+    $stmt->bind_param("ssi", $client_date, $tomorrowDate, $user_id);
+    // var_dump($stmt);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        // var_dump($data);
+        echo json_encode($data);
+    } 
+    else {
+        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+    };
+};
+
 
 CloseCon($conn);
