@@ -206,13 +206,19 @@ if ($_POST["table"] === "getApp") {
     $tomorrowDate = $tomorrowDate->format('Y-m-d H:i:s');
     // echo $client_date, " ", $tomorrowDate, " ", $user_id;
 
-    $stmt = $conn->prepare("SELECT appointment.idappointment, appointment.caregiver, appointment.patient, appointment.start, appointment.end, appointment.notes, appointment.entered, patient.fname, patient.lname  
+    $stmt = $conn->prepare("SELECT appointment.idappointment, appointment.caregiver, 
+    appointment.patient, appointment.start, appointment.end, appointment.notes, 
+    appointment.entered, patient.fname, patient.lname  
     FROM appointment join patient on patient = idpatient WHERE `start` >= ? and `start` < ? and caregiver = ?");
     $stmt->bind_param("ssi", $client_date, $tomorrowDate, $user_id);
     // var_dump($stmt);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         $data = $result->fetch_all(MYSQLI_ASSOC);
+        for($i=0; $i<count($data); $i++){ 
+            $newVal = encrypt($data[$i]['idappointment']);
+            $data[$i]['idappointment'] = $newVal;
+        };
         // var_dump($data);
         echo json_encode($data);
     } 
@@ -220,6 +226,19 @@ if ($_POST["table"] === "getApp") {
         echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
     };
 };
+
+if ($_POST["table"] === "appnotes") {
+    $app_id = decrypt($_POST["id"]);
+    $notes = $_POST["notes"];
+    $sql = $conn->prepare("UPDATE `appointment` SET `notes` = ? WHERE `idappointment` = ?");
+    $sql->bind_param("si", $notes, $app_id);
+    if ($sql->execute()) {
+        echo "Notes edited successfully";
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    };
+};
+
 
 
 CloseCon($conn);
