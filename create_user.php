@@ -1,8 +1,11 @@
 <?php
 // create user in database
 include 'db_connection.php';
-header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
+header('Access-Control-Allow-Credentials: true');
 
+/** @var $conn db_connection */
 $conn = OpenCon();
 
 $first_name = $_POST["fname"];
