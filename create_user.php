@@ -31,7 +31,7 @@ $sql->bind_param("sssss", $first_name, $last_name, $username, $password, $phone)
 if($sql->execute()){
   echo "New user created successfully";
   } else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    echo "Error: " . $sql . "<br/>" . mysqli_error($conn);
 };
 
 CloseCon($conn);

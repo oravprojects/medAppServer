@@ -18,7 +18,7 @@ $sql->bind_param("ssss", $first_name, $last_name, $email, $phone);
 if($sql->execute()){
   echo "New patient created successfully!";
   } else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    echo "Error: " . $sql . "<br/>" . mysqli_error($conn);
 };
 
 CloseCon($conn);

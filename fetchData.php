@@ -67,7 +67,7 @@ if ($_POST["table"] === "reports") {
         };
         echo json_encode($data);
     } else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -88,7 +88,7 @@ if ($_POST["table"] === "reports_add") {
     if ($sql->execute()) {
         echo "Report added successfully";
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Error: " . $sql . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -135,7 +135,7 @@ if ($_POST["table"] === "getReminders") {
         $data = $result->fetch_all(MYSQLI_ASSOC);
         echo json_encode($data);
     } else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -152,7 +152,7 @@ if ($_POST["table"] === "setReminder") {
     if ($stmt->execute()) {
         echo "success";
     } else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -165,7 +165,7 @@ if ($_POST["table"] === "reminderViewed") {
     if ($stmt->execute()) {
         echo "success";
     } else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -188,7 +188,7 @@ if ($_POST["table"] === "setApp") {
     if ($stmt->execute()) {
         echo "success";
     } else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 
@@ -223,7 +223,7 @@ if ($_POST["table"] === "getApp") {
         echo json_encode($data);
     } 
     else {
-        echo "Error: " . $stmt . "<br>" . mysqli_error($conn);
+        echo "Error: " . $stmt . "<br/>" . mysqli_error($conn);
     };
 };
 

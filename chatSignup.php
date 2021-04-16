@@ -18,10 +18,10 @@
             $sql = $conn->prepare("SELECT username FROM caregiver WHERE username = ?");
             $sql->bind_param('s', $email);
             $sql->execute();
-        	// Store the result so we can check if the account exists in the database.
-	        $sql->store_result();
+            // Store the result so we can check if the account exists in the database.
+            $sql->store_result();
 
-            if ($sql->num_rows > 0){
+            if ($sql->num_rows > 0) {
                 echo "email already exists";
             } else {
                 if (isset($_FILES['image'])) {
@@ -40,12 +40,22 @@
                             $status = "active";
                             // $random_id = rand(time(), 10000000);
                             $sql2 = $conn->prepare("INSERT INTO `patient` (`fname`, `lname`, `email`, `password`, `phone`, `image`, `status`)
-                                VALUES (?,?,?,?,?,?,?)");
+                                    VALUES (?,?,?,?,?,?,?)");
                             $sql2->bind_param("sssssss", $fname, $lname, $email, $password, $phone, $new_img_name, $status);
                             if ($sql2->execute()) {
-                                echo "success";
+                                $sql3 = $conn->prepare("SELECT * from patient WHERE email = ?");
+                                $sql3->bind_param("s", $email);
+                                $sql3->execute();
+                                $result = $sql3->get_result();
+                                $data = $result->fetch_all(MYSQLI_ASSOC);
+                                // $sql3->store_result();
+                                if ($result->num_rows > 0) {
+                                    $_SESSION['id'] = $data[0]['idpatient'];
+                                    // echo json_encode($data);
+                                    echo "success";
+                                }
                             } else {
-                                echo "Error: " . $sql2 . "<br>" . mysqli_error($conn);
+                                echo "Error: " . $sql2 . "<br/>" . mysqli_error($conn);
                             }
                             CloseCon($conn);
                         }
