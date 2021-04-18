@@ -22,6 +22,4 @@ $id = $_SESSION['id'];
     }elseif(mysqli_num_rows($sql) > 1){
         include "chatData.php";
     }
-
-
 ?>
