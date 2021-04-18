@@ -17,7 +17,9 @@
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-        $output .= "found user";
+        $newSearchTerm = mysqli_real_escape_string($conn, $_POST['searchTerm']);
+        $sql = mysqli_query($conn, "SELECT * from patient WHERE fname LIKE '%{$newSearchTerm}%' OR lname LIKE '%{$newSearchTerm}%'");
+        include "chatData.php";
     }else{
         $output .= "no such user found";
     } 
