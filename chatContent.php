@@ -17,7 +17,7 @@
         }
         closeCon($conn);
     }else{
-        header("location: http://127.0.0.1:5500/chatLogin.html");
+        echo "logout";
         exit;
     }
 ?>

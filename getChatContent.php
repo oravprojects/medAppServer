@@ -12,8 +12,10 @@
         $output = "";
         $conn = OpenCon();
 
-        $sql = "SELECT * FROM chat_messages WHERE (outgoing_msg_id = {$outgoing_id} AND incoming_msg_id = {$incoming_id})
-        OR (outgoing_msg_id = {$incoming_id} AND incoming_msg_id = {$outgoing_id}) ORDER BY idchat_messages DESC";
+        $sql = "SELECT * FROM chat_messages 
+        LEFT JOIN patient on patient.idpatient = chat_messages.outgoing_msg_id
+        WHERE (outgoing_msg_id = {$outgoing_id} AND incoming_msg_id = {$incoming_id})
+        OR (outgoing_msg_id = {$incoming_id} AND incoming_msg_id = {$outgoing_id}) ORDER BY idchat_messages ASC";
 
         $query = mysqli_query($conn, $sql);
         if(mysqli_num_rows($query) > 0){
@@ -26,7 +28,7 @@
                                 </div>';
                 }else{
                     $output.= '<div class="chat incoming">
-                                    <img src="http://127.0.0.1/healthcareProvider/images/'. $img .'&puppy.jpg" alt="">
+                                    <img src="http://127.0.0.1/healthcareProvider/images/'. $row['image'] .'" alt="">
                                     <div class="details">
                                     <p>'. $row['msg'] .'</p>
                                     </div>
@@ -37,7 +39,7 @@
         } 
         closeCon($conn);
     }else{
-        header("location: http://127.0.0.1:5500/chatLogin.html");
+        echo "logout";
         exit;
     }
 ?>

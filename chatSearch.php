@@ -11,8 +11,8 @@
     $id = $_SESSION['id'];
     $output = "";
 
-    $stmt = $conn->prepare("SELECT * from patient WHERE fname LIKE ? OR lname LIKE ?");
-    $stmt->bind_param("ss", $searchTerm, $searchTerm);
+    $stmt = $conn->prepare("SELECT * from patient WHERE NOT idpatient = ? AND (fname LIKE ? OR lname LIKE ?)");
+    $stmt->bind_param("iss", $id, $searchTerm, $searchTerm);
     $stmt->execute();
     $result = $stmt->get_result();
     

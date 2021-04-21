@@ -4,7 +4,12 @@
 
     header('Access-Control-Allow-Origin: http://127.0.0.1:5500');
     header('Access-Control-Allow-Credentials: true');
-
+    
+    /** @var $conn db_connection */
+    if(!isset($_SESSION['id'])){
+        echo "logout";
+        exit;
+    }
     $conn = OpenCon();
     $id = $_SESSION['id'];
 

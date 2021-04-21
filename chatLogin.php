@@ -28,9 +28,21 @@
                     $lname = $data[0]["lname"];
                     $status = $data[0]["status"];
                     $image = $data[0]["image"];
+                    
+                    $id = $_SESSION['id'];
+                    $status = "active";
+        
+                    $stmt = $conn->prepare("UPDATE `patient` SET `status` = ? WHERE idpatient = ?");
+                    $stmt->bind_param("si", $status, $id);
+                    $stmt->execute();
+                    $result = $stmt->affected_rows;
+                    if ($result > 0) {
                     $res = array("login" => "success", "fname"=> $fname, "lname" => $lname, "status" => $status, "image" => $image);
                     // var_dump($_SESSION);
                     echo json_encode($res);
+                }else{
+                    echo "something went wrong . . .";
+                }
                 } else {
                     // Incorrect password
                     // $res = array("login" => "failure");

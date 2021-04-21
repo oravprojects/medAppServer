@@ -6,6 +6,10 @@
     header('Access-Control-Allow-Credentials: true');
 
     $conn = OpenCon();
+    if(!isset($_SESSION['id'])){
+        echo "logout";
+        exit;
+    }
     $id = $_SESSION['id'];
 
     $sql = mysqli_query($conn, "SELECT * from patient where status = 'active' and idpatient != $id");
