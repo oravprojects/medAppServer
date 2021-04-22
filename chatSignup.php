@@ -16,7 +16,7 @@
     if (!empty($fname) && !empty($lname) && !empty($email) && !empty($password)) {
         $password = password_hash($password, PASSWORD_DEFAULT);
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $sql = $conn->prepare("SELECT username FROM caregiver WHERE username = ?");
+            $sql = $conn->prepare("SELECT email FROM patient WHERE email = ?");
             $sql->bind_param('s', $email);
             $sql->execute();
             // Store the result so we can check if the account exists in the database.
@@ -29,15 +29,18 @@
                     $img_type = $_FILES['image']['type'];
                     $tmp_name = $_FILES['image']['tmp_name'];
 
+                    // remove problematic chars from image name
+                    $img_name = preg_replace("/[^\w\-\.]/", '', $img_name); 
+
                     $img_explode = explode('.', $img_name);
                     $img_ext = end($img_explode);
-
+                    
                     $extensions = ['png', 'jpeg', 'jpg'];
                     if (in_array($img_ext, $extensions) === true) {
                         $time = time();
                         $new_img_name = $time . $img_name;
                         if (move_uploaded_file($tmp_name, "images/" . $new_img_name)) {
-                            $status = "active";
+                            $status = "offline";
                             // $random_id = rand(time(), 10000000);
                             $sql2 = $conn->prepare("INSERT INTO `patient` (`fname`, `lname`, `email`, `password`, `phone`, `image`, `status`)
                                     VALUES (?,?,?,?,?,?,?)");
@@ -50,7 +53,7 @@
                                 $data = $result->fetch_all(MYSQLI_ASSOC);
                                 // $sql3->store_result();
                                 if ($result->num_rows > 0) {
-                                    $_SESSION['id'] = $data[0]['idpatient'];
+                                    // $_SESSION['id'] = $data[0]['idpatient'];
                                     // echo json_encode($data);
                                     echo "success";
                                 }

@@ -7,6 +7,7 @@
     
     /** @var $conn db_connection */
     if(!isset($_SESSION['id'])){
+        var_dump($_SESSION);
         echo "logout";
         exit;
     }

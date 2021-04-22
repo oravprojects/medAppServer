@@ -7,6 +7,10 @@
 
     $conn = OpenCon();
     
+    // if(isset($_SESSION['id'])){
+    //     session_unset();
+    //     session_destroy();
+    // }
     if(isset($_SESSION['id'])){
         $id = $_SESSION['id'];
         $status = "offline";
