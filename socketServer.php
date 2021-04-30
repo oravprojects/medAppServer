@@ -3,8 +3,8 @@
     
     // set some variables
     $host = "127.0.0.1";
-    $port = 80;
-    
+    $port = 8000;
+    session_start();
     // don't timeout!
     set_time_limit(0);
     
@@ -16,6 +16,7 @@
     
     // start listening for connections
     $result = socket_listen($socket, 20)or die("Could not set up socket listener\n");
+    var_dump($result);
     
     $flag_handshake = false;
     $client = null;
@@ -24,6 +25,7 @@
             // accept incoming connections
             // client another socket to handle communication
             $client = socket_accept($socket)or die("Could not accept incoming connection\n");
+            var_dump($client);
         }
     
         $bytes =  @socket_recv($client, $data, 2048, 0);
@@ -42,9 +44,29 @@
                 $response = strrev($decoded_data);
                 socket_write($client, encode($response));
                 print("> ".$response."\n");
-                socket_close($client);
-                $client = null;
-                $flag_handshake = false;
+
+                include_once "db_connection.php";
+    
+                if(true){
+                    $outgoing_id = 6; 
+                    $incoming_id = 7;
+                    $message = $decoded_data;
+                    $conn = OpenCon();
+
+                    if(!empty($message)){
+                        $sql = mysqli_query($conn, "INSERT INTO chat_messages (incoming_msg_id, outgoing_msg_id, msg) 
+                        VALUES({$incoming_id}, {$outgoing_id}, '{$message}')") or die();
+                    }
+                    // closeCon($conn);
+                }else{
+                    echo "logout";
+                    exit;
+                }
+
+
+                // socket_close($client);
+                // $client = null;
+                // $flag_handshake = false;
             }
         }
     } while (true);
@@ -52,11 +74,15 @@
     // close sockets
     socket_close($client);
     socket_close($socket);
+    closeCon($conn);
     
     function handshake($client, $headers, $socket) {
     
         if (preg_match("/Sec-WebSocket-Version: (.*)\r\n/", $headers, $match))
-            $version = $match[1];
+            {$version = $match[1];
+            // var_dump($headers);
+            // var_dump($version);
+            }
         else {
             print("The client doesn't support WebSocket");
             return false;
@@ -66,12 +92,16 @@
             // Extract header variables
             if (preg_match("/GET (.*) HTTP/", $headers, $match))
                 $root = $match[1];
+                var_dump($root);
             if (preg_match("/Host: (.*)\r\n/", $headers, $match))
                 $host = $match[1];
+                var_dump($host);
             if (preg_match("/Origin: (.*)\r\n/", $headers, $match))
                 $origin = $match[1];
+                var_dump($origin);
             if (preg_match("/Sec-WebSocket-Key: (.*)\r\n/", $headers, $match))
                 $key = $match[1];
+                var_dump($key);
     
             $acceptKey = $key.'258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
             $acceptKey = base64_encode(sha1($acceptKey, true));

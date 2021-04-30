@@ -12,7 +12,8 @@
     }
     $id = $_SESSION['id'];
 
-    $sql = mysqli_query($conn, "SELECT * from patient where status = 'active' and idpatient != $id");
+    // $sql = mysqli_query($conn, "SELECT * from patient where status = 'active' and idpatient != $id");
+    $sql = mysqli_query($conn, "SELECT * from patient where idpatient != $id");
     $output = "";
     
     if(mysqli_num_rows($sql) === 1){

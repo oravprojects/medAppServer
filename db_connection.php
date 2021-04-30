@@ -1,7 +1,8 @@
 <?php
+include 'dbVar.php';
 
 function OpenCon(){
-    include_once 'dbVar.php';
+    include 'dbVar.php';
 
     // Connect to MySQL
     // $conn = new mysqli($dbServername, $dbUsername, $dbPassword);
